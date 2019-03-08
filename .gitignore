@@ -8,3 +8,5 @@ gen
 
 # node
 node_modules
+
+data/
