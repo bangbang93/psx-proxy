@@ -19,15 +19,16 @@ app.all('*', onRequest)
 server.on('connect', onConnect)
 
 async function onRequest(req: Request, res: Response) {
-  const filename = path.basename(req.url)
+  const {pathname} = url.parse(req.url)
+  const filename = path.basename(pathname)
   const file = path.join(dataDir, filename)
   if (await fs.pathExists(file)) {
     console.log(colors.green(`cache hit ${req.url}`))
-    fs.createReadStream(file).pipe(res)
+    res.sendFile(file)
     return
   }
 
-  if (req.url.match(urlReg)) {
+  if (pathname.match(urlReg)) {
     console.log(colors.rainbow(`need cache ${req.url}`))
   } else {
     console.log(colors.gray(`proxying ${req.url}`))
